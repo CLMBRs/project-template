@@ -17,7 +17,7 @@ jobs:
           - name: python-no-hydra
             answers: "-d use_hydra=false -d license=MIT -d package_name=other_name"
           - name: no-language
-            answers: "-d languages=[] -d license=none"
+            answers: "-d 'languages=[]' -d license=none"
     name: ${{ matrix.name }}
     steps:
       - uses: actions/checkout@v6
