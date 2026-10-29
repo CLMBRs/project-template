@@ -1,0 +1,71 @@
+[project]
+name = "{{ project_name }}"
+version = "0.1.0"
+description = "{{ description }}"
+readme = "README.md"
+authors = [{ name = "{{ author_name }}", email = "{{ author_email }}" }]
+{%- if license != "none" %}
+license = "{{ license }}"
+license-files = ["LICENSE"]
+{%- endif %}
+requires-python = ">={{ python_version }}"
+dependencies = [
+{%- if use_hydra %}
+    "hydra-core>=1.3.2",
+{%- else %}
+    "pyyaml>=6.0",
+{%- endif %}
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.7.0",
+    "pytest>=9.2.0",
+    "ruff>=0.17.3",
+    "ty>=0.0.94",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14"]
+build-backend = "uv_build"
+
+[tool.uv.build-backend]
+module-name = "{{ package_name }}"
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # import sorting
+    "N",   # PEP 8 naming
+    "D",   # docstrings
+    "ANN", # type annotations
+    "UP",  # modern Python syntax
+    "B",   # likely bugs
+    "SIM", # simplifications
+    "C4",  # comprehensions
+    "PTH", # prefer pathlib
+    "NPY", # NumPy
+    "RUF", # ruff-specific
+]
+ignore = [
+    "ANN401", # allow typing.Any where it's genuinely needed
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "ANN201"]
+"**/*.ipynb" = ["D", "ANN", "E402"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ty.src]
+include = ["src", "scripts", "tests"]
+
+[tool.pytest]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers"]

@@ -1,0 +1,120 @@
+# AGENTS.md
+
+Instructions for AI coding agents (and humans) working in this repository.
+
+> This file comes from the [CLMBR project template](https://github.com/CLMBRs/project-template)
+> and is updated with `copier update`. **Do not edit it here.** Put project-specific
+> instructions in [PROJECT.md](PROJECT.md); suggest group-wide changes to the template.
+
+This is research code from [CLMBR](https://clmbr.shane.st) (Computation, Language and
+Meaning Band of Researchers) at the University of Washington. Priorities, in order:
+**correctness, reproducibility, and readability** by other researchers. Prefer simple,
+explicit code over clever or highly abstracted code.
+
+## Before you start
+
+1. Read [PROJECT.md](PROJECT.md) for this project's goals, data, and conventions. It
+   takes precedence over this file where they conflict.
+2. Read [README.md](README.md), especially how results are reproduced.
+{%- if 'python' in languages %}
+3. Before writing Python, read [guidelines/python-style.md](guidelines/python-style.md).
+{%- endif %}
+
+Further group guidelines are in [guidelines/](guidelines/):
+[project-setup.md](guidelines/project-setup.md) (structure, environments, releases)
+and [packages.md](guidelines/packages.md) (recommended libraries).
+
+## Repository layout
+
+| Path | Contents |
+| --- | --- |
+{%- if 'python' in languages %}
+| `src/{{ package_name }}/` | The project's importable package: all reusable logic lives here. |
+| `scripts/` | Thin command-line entry points that import from `src/`. |
+{%- if use_hydra %}
+| `config/` | Hydra configs for experiments. Every experimental setting belongs here. |
+{%- else %}
+| `config/` | Config files for experiments. Every experimental setting belongs here. |
+{%- endif %}
+| `tests/` | pytest tests for `src/`. |
+{%- endif %}
+| `notebooks/` | Exploratory analysis only; not a source of reusable code. |
+| `data/` | Local data, git-ignored. `data/README.md` says where it comes from. |
+| `outputs/` | Generated results (models, logs, predictions, figures), git-ignored. |
+| `docs/` | User-facing documentation for this project. |
+| `guidelines/` | CLMBR group guidelines (template-owned; do not edit). |
+{%- if 'python' in languages %}
+
+## Python commands
+
+The environment is managed **only** with [uv](https://docs.astral.sh/uv/).
+
+```bash
+uv sync                               # install/refresh the environment from uv.lock
+uv add <package>                      # add a dependency (updates pyproject.toml + uv.lock)
+uv add --dev <package>                # add a development-only dependency
+uv remove <package>                   # remove a dependency
+uv run python scripts/<script>.py     # run a script
+uv run pytest                         # run tests
+uv run ruff format                    # format code
+uv run ruff check --fix               # lint (and auto-fix what's safe)
+uv run ty check                       # type check
+uv run pre-commit run --all-files     # run every check that CI runs
+```
+
+- **Never** use `pip`, `uv pip`, `conda`, or `requirements.txt`, and never edit
+  `uv.lock` by hand. Always commit `pyproject.toml` and `uv.lock` together.
+- **Never** invoke `python` directly; use `uv run` so the project environment is used.
+- Tool settings (line length, lint rules, type checking) live in `pyproject.toml`.
+  Do not add per-line suppressions (`# noqa`, `# type: ignore`) without a comment
+  saying why.
+
+## Python rules (summary of [guidelines/python-style.md](guidelines/python-style.md))
+
+- Put reusable logic in `src/{{ package_name }}/`; keep `scripts/` thin. Import the
+  package by name (`from {{ package_name }}.x import y`); never modify `sys.path`.
+- Type-hint every function signature, using built-in generics (`list[str]`,
+  `dict[str, int]`, `X | None`).
+- Write Google-style docstrings for every public module, class, and function.
+- Use full, descriptive names (`num_layers`, not `nl`), space permitting.
+- Comment non-obvious code in the imperative mood (`# cache embeddings for reuse`),
+  and add shape comments for tensors and arrays (`# (batch, seq_len, hidden)`).
+- Return a dataclass or `NamedTuple` instead of a long tuple of positional values.
+- Use `logging` (not `print`) in `src/`; use `pathlib.Path` for file paths.
+{%- endif %}
+
+## Research rules
+
+- **Never fabricate or "fill in" results**, numbers, citations, or data. If something
+  fails or can't be computed, say so plainly.
+- **Never weaken a test, check, or evaluation to make it pass.** Fix the underlying
+  problem, or stop and explain.
+- **Data:** never commit raw datasets, data from human participants, credentials, or
+  large files. Never modify raw data in place; write processed data to a new location
+  via a script, so the processing is reproducible.
+- **Outputs:** never delete or overwrite existing results in `outputs/` unless asked.
+- **Configuration:** experimental settings (hyperparameters, paths, seeds, model names)
+  belong in `config/`, not hard-coded in Python.
+- **Randomness:** seed all random number generators from the config.
+- **Reproducibility:** if you change how results are produced, update the
+  "Reproducing results" section of `README.md` to match.
+- **Compute:** ask before launching long-running, GPU, or cluster jobs, or downloading
+  large datasets or models.
+
+## Git
+
+- Make small, focused commits with messages in the imperative mood
+  ("Add tokenizer cache", not "added stuff").
+- Do not push, force-push, rewrite history, or change branches unless asked.
+
+## Before you say you're done
+{%- if 'python' in languages %}
+
+1. `uv run pre-commit run --all-files` passes (formatting, linting, type checking).
+2. `uv run pytest` passes, and new code in `src/` has tests.
+3. Docstrings, `README.md`, and `PROJECT.md` reflect your changes.
+{%- else %}
+
+1. `uvx pre-commit run --all-files` passes.
+2. `README.md` and `PROJECT.md` reflect your changes.
+{%- endif %}

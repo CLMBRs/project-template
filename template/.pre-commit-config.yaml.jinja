@@ -1,0 +1,39 @@
+{%- set pre_commit = "uv run pre-commit" if 'python' in languages else "uvx pre-commit" -%}
+# Checks that run on every commit (after `{{ pre_commit }} install`) and in CI.
+# Run them all by hand with: {{ pre_commit }} run --all-files
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      # guard against accidentally committing data or model files
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+{%- if 'python' in languages %}
+
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.13.6
+    hooks:
+      # make sure uv.lock matches pyproject.toml
+      - id: uv-lock
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.17.3
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: local
+    hooks:
+      - id: ty
+        name: ty check
+        entry: uv run ty check
+        language: system
+        types_or: [python, pyi]
+        pass_filenames: false
+{%- endif %}

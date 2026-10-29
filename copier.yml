@@ -1,0 +1,97 @@
+# Copier configuration for the CLMBR project template.
+# Docs: https://copier.readthedocs.io/en/stable/configuring/
+
+_min_copier_version: "9.4"
+_subdirectory: template
+_answers_file: .copier-answers.yml
+
+# Files the project owns after generation: `copier update` never overwrites them.
+_skip_if_exists:
+  - PROJECT.md
+  - README.md
+  - docs/**
+  - data/README.md
+  - config/**
+  - scripts/**
+  - src/**
+  - tests/**
+
+project_name:
+  type: str
+  help: Project name, used for the repo and distribution (lowercase, hyphens; e.g. corpus-filtering)
+  validator: >-
+    {% if not (project_name | regex_search('^[a-z][a-z0-9-]*$')) %}
+    Use lowercase letters, digits, and hyphens, starting with a letter.
+    {% endif %}
+
+description:
+  type: str
+  help: One-sentence description of the project
+  default: ""
+
+author_name:
+  type: str
+  help: Your full name
+
+author_email:
+  type: str
+  help: Your email address
+
+github_owner:
+  type: str
+  help: GitHub user or organization that will host the repo
+  default: CLMBRs
+
+license:
+  type: str
+  help: License (see https://choosealicense.com/licenses/)
+  default: GPL-3.0-or-later
+  choices:
+    GNU GPLv3 (group default): GPL-3.0-or-later
+    MIT: MIT
+    Apache 2.0: Apache-2.0
+    None for now: none
+
+languages:
+  type: str
+  help: Languages used in this project (other languages can be added to the template as needed)
+  multiselect: true
+  default: [python]
+  choices:
+    Python: python
+
+package_name:
+  type: str
+  help: Python package (import) name
+  default: "{{ project_name | replace('-', '_') }}"
+  when: "{{ 'python' in languages }}"
+  validator: >-
+    {% if not (package_name | regex_search('^[a-z][a-z0-9_]*$')) %}
+    Use lowercase letters, digits, and underscores, starting with a letter.
+    {% endif %}
+
+python_version:
+  type: str
+  help: Python version for the project's environment
+  default: "3.13"
+  when: "{{ 'python' in languages }}"
+
+use_hydra:
+  type: bool
+  help: Use Hydra for experiment configuration?
+  default: true
+  when: "{{ 'python' in languages }}"
+
+_message_after_copy: |
+  Created {{ project_name }}! Next steps:
+
+    cd {{ _copier_conf.dst_path }}
+    git init -b main
+  {%- if 'python' in languages %}
+    uv sync                      # create the environment and uv.lock
+    uv run pre-commit install    # run checks on every commit
+    uv run pytest                # make sure everything works
+  {%- endif %}
+    git add -A && git commit -m "Initial commit from CLMBR project template"
+
+  Then fill in README.md and PROJECT.md.

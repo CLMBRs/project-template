@@ -1,0 +1,46 @@
+name: Test template
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: python-hydra
+            answers: ""
+          - name: python-no-hydra
+            answers: "-d use_hydra=false -d license=MIT -d package_name=other_name"
+          - name: no-language
+            answers: "-d languages=[] -d license=none"
+    name: ${{ matrix.name }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: astral-sh/setup-uv@v7
+      - name: Generate project
+        run: |
+          git config --global user.name "CI"
+          git config --global user.email "ci@example.com"
+          uvx copier copy --defaults --vcs-ref HEAD \
+            -d project_name=test-project -d author_name=CI -d author_email=ci@example.com \
+            ${{ matrix.answers }} . "$RUNNER_TEMP/test-project"
+      - name: Check generated project
+        working-directory: ${{ runner.temp }}/test-project
+        run: |
+          git init -q && git add -A
+          if [ -f pyproject.toml ]; then
+            uv sync
+            git add -A
+            uv run pre-commit run --all-files --show-diff-on-failure
+            uv run pytest
+            uv run python scripts/run_experiment.py
+          else
+            uvx pre-commit run --all-files --show-diff-on-failure
+          fi

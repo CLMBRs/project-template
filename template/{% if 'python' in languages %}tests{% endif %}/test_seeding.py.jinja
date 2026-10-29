@@ -1,0 +1,11 @@
+import random
+
+from {{ package_name }}.seeding import set_seed
+
+
+def test_set_seed_makes_random_reproducible():
+    set_seed(42)
+    first_draws = [random.random() for _ in range(5)]
+    set_seed(42)
+    second_draws = [random.random() for _ in range(5)]
+    assert first_draws == second_draws
