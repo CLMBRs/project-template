@@ -6,18 +6,15 @@
 
 ## Repository structure
 
-{% if 'python' in languages -%}
 - `src/{{ package_name }}/`: the project's Python package
 - `scripts/`: command-line entry points
 - `config/`: experiment configs{% if use_hydra %} ([Hydra](https://hydra.cc)){% endif %}
 - `tests/`: tests
-{% endif -%}
 - `notebooks/`: exploratory analysis
 - `data/`: data (not committed; see [`data/README.md`](data/README.md))
 - `outputs/`: results (not committed)
 - `docs/`: documentation
 - `guidelines/`: [CLMBR group guidelines](guidelines/project-setup.md)
-{%- if 'python' in languages %}
 
 ## Setup
 
@@ -28,18 +25,15 @@ git clone https://github.com/{{ github_owner }}/{{ project_name }}.git
 cd {{ project_name }}
 uv sync
 ```
-{%- endif %}
 
 ## Reproducing results
 
 <!-- List exactly what to run, in order, to reproduce every result in the paper/thesis,
      from obtaining data to generating figures. Keep this up to date. -->
-{%- if 'python' in languages %}
 
 ```bash
 uv run python scripts/run_experiment.py
 ```
-{%- endif %}
 
 ## License
 

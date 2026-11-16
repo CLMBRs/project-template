@@ -14,9 +14,9 @@ research projects. It is **not** itself a Python project.
 When changing the template:
 
 - Keep generated projects passing their own checks. Test every change by generating
-  projects with several answer combinations (Python with and without Hydra, and no
-  languages) and running `uv sync`, `uv run pre-commit run --all-files`, and
-  `uv run pytest` in each; see `.github/workflows/test-template.yml`.
+  projects with several answer combinations (Python with and without Hydra, and
+  different license choices) and running `uv sync`, `uv run pre-commit run --all-files`,
+  and `uv run pytest` in each; see `.github/workflows/test-template.yml`.
 - Keep `AGENTS.md.jinja` short and imperative; detailed explanations belong in
   `template/guidelines/`. Rules that a tool can enforce belong in the tool's
   configuration in `pyproject.toml.jinja`, not in prose.

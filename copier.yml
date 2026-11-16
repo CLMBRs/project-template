@@ -52,19 +52,10 @@ license:
     Apache 2.0: Apache-2.0
     None for now: none
 
-languages:
-  type: str
-  help: Languages used in this project (other languages can be added to the template as needed)
-  multiselect: true
-  default: [python]
-  choices:
-    Python: python
-
 package_name:
   type: str
   help: Python package (import) name
   default: "{{ project_name | replace('-', '_') }}"
-  when: "{{ 'python' in languages }}"
   validator: >-
     {% if not (package_name | regex_search('^[a-z][a-z0-9_]*$')) %}
     Use lowercase letters, digits, and underscores, starting with a letter.
@@ -74,24 +65,20 @@ python_version:
   type: str
   help: Python version for the project's environment
   default: "3.13"
-  when: "{{ 'python' in languages }}"
 
 use_hydra:
   type: bool
   help: Use Hydra for experiment configuration?
   default: true
-  when: "{{ 'python' in languages }}"
 
 _message_after_copy: |
   Created {{ project_name }}! Next steps:
 
     cd {{ _copier_conf.dst_path }}
     git init -b main
-  {%- if 'python' in languages %}
     uv sync                      # create the environment and uv.lock
     uv run pre-commit install    # run checks on every commit
     uv run pytest                # make sure everything works
-  {%- endif %}
     git add -A && git commit -m "Initial commit from CLMBR project template"
 
   Then fill in README.md and PROJECT.md.

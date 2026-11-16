@@ -23,7 +23,8 @@ the template repository is private, first let git use your GitHub login: install
 uvx copier copy gh:CLMBRs/project-template my-project
 ```
 
-Copier asks a few questions (name, license, languages, ...) and prints the next steps.
+Copier asks a few questions (name, license, Python package name, ...) and prints the
+next steps. Python is included in every project; other languages can be added as needed.
 Later, to pull in improvements to the template:
 
 ```bash

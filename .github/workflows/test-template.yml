@@ -16,8 +16,8 @@ jobs:
             answers: ""
           - name: python-no-hydra
             answers: "-d use_hydra=false -d license=MIT -d package_name=other_name"
-          - name: no-language
-            answers: "-d 'languages=[]' -d license=none"
+          - name: python-no-license
+            answers: "-d license=none"
     name: ${{ matrix.name }}
     steps:
       - uses: actions/checkout@v6
@@ -35,12 +35,8 @@ jobs:
         working-directory: ${{ runner.temp }}/test-project
         run: |
           git init -q && git add -A
-          if [ -f pyproject.toml ]; then
-            uv sync
-            git add -A
-            uv run pre-commit run --all-files --show-diff-on-failure
-            uv run pytest
-            uv run python scripts/run_experiment.py
-          else
-            uvx pre-commit run --all-files --show-diff-on-failure
-          fi
+          uv sync
+          git add -A
+          uv run pre-commit run --all-files --show-diff-on-failure
+          uv run pytest
+          uv run python scripts/run_experiment.py

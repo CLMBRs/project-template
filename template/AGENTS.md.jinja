@@ -16,9 +16,7 @@ explicit code over clever or highly abstracted code.
 1. Read [PROJECT.md](PROJECT.md) for this project's goals, data, and conventions. It
    takes precedence over this file where they conflict.
 2. Read [README.md](README.md), especially how results are reproduced.
-{%- if 'python' in languages %}
 3. Before writing Python, read [guidelines/python-style.md](guidelines/python-style.md).
-{%- endif %}
 
 Further group guidelines are in [guidelines/](guidelines/):
 [project-setup.md](guidelines/project-setup.md) (structure, environments, releases)
@@ -28,7 +26,6 @@ and [packages.md](guidelines/packages.md) (recommended libraries).
 
 | Path | Contents |
 | --- | --- |
-{%- if 'python' in languages %}
 | `src/{{ package_name }}/` | The project's importable package: all reusable logic lives here. |
 | `scripts/` | Thin command-line entry points that import from `src/`. |
 {%- if use_hydra %}
@@ -37,13 +34,11 @@ and [packages.md](guidelines/packages.md) (recommended libraries).
 | `config/` | Config files for experiments. Every experimental setting belongs here. |
 {%- endif %}
 | `tests/` | pytest tests for `src/`. |
-{%- endif %}
 | `notebooks/` | Exploratory analysis only; not a source of reusable code. |
 | `data/` | Local data, git-ignored. `data/README.md` says where it comes from. |
 | `outputs/` | Generated results (models, logs, predictions, figures), git-ignored. |
 | `docs/` | User-facing documentation for this project. |
 | `guidelines/` | CLMBR group guidelines (template-owned; do not edit). |
-{%- if 'python' in languages %}
 
 ## Python commands
 
@@ -81,7 +76,6 @@ uv run pre-commit run --all-files     # run every check that CI runs
   and add shape comments for tensors and arrays (`# (batch, seq_len, hidden)`).
 - Return a dataclass or `NamedTuple` instead of a long tuple of positional values.
 - Use `logging` (not `print`) in `src/`; use `pathlib.Path` for file paths.
-{%- endif %}
 
 ## Research rules
 
@@ -108,13 +102,7 @@ uv run pre-commit run --all-files     # run every check that CI runs
 - Do not push, force-push, rewrite history, or change branches unless asked.
 
 ## Before you say you're done
-{%- if 'python' in languages %}
 
 1. `uv run pre-commit run --all-files` passes (formatting, linting, type checking).
 2. `uv run pytest` passes, and new code in `src/` has tests.
 3. Docstrings, `README.md`, and `PROJECT.md` reflect your changes.
-{%- else %}
-
-1. `uvx pre-commit run --all-files` passes.
-2. `README.md` and `PROJECT.md` reflect your changes.
-{%- endif %}

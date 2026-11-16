@@ -6,7 +6,6 @@ on:
   pull_request:
 
 jobs:
-{%- if 'python' in languages %}
   python:
     runs-on: ubuntu-latest
     steps:
@@ -20,12 +19,3 @@ jobs:
         run: uv run pre-commit run --all-files --show-diff-on-failure
       - name: Run tests
         run: uv run pytest
-{%- else %}
-  checks:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - uses: astral-sh/setup-uv@v7
-      - name: Run pre-commit checks
-        run: uvx pre-commit run --all-files --show-diff-on-failure
-{%- endif %}

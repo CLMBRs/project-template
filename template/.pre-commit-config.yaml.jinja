@@ -1,6 +1,5 @@
-{%- set pre_commit = "uv run pre-commit" if 'python' in languages else "uvx pre-commit" -%}
-# Checks that run on every commit (after `{{ pre_commit }} install`) and in CI.
-# Run them all by hand with: {{ pre_commit }} run --all-files
+# Checks that run on every commit (after `uv run pre-commit install`) and in CI.
+# Run them all by hand with: uv run pre-commit run --all-files
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -13,7 +12,6 @@ repos:
       # guard against accidentally committing data or model files
       - id: check-added-large-files
         args: [--maxkb=1000]
-{%- if 'python' in languages %}
 
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.13.6
@@ -36,4 +34,3 @@ repos:
         language: system
         types_or: [python, pyi]
         pass_filenames: false
-{%- endif %}

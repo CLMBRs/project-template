@@ -68,8 +68,11 @@ merges the two.
 The template lives in [`template/`](template/), and the questions Copier asks are in
 [`copier.yml`](copier.yml). Files ending in `.jinja` are rendered with the answers;
 files or directories whose names render empty (e.g.
-`{% if 'python' in languages %}src{% endif %}`) are skipped, which is how
-language-specific files are included only when needed.
+`{% if license == 'MIT' %}LICENSE{% endif %}`) are skipped. Python is included in
+every project; conditional names can be used for future optional languages.
+
+Projects created from older versions without Python can remain on their existing
+template release; updating them to the Python-first template is not supported.
 
 To test changes, generate a project from your working copy and run its checks:
 
@@ -91,11 +94,12 @@ git tag -a v0.2.0 -m "Describe the change" && git push --follow-tags
 
 ### Adding a language
 
-1. Add it to the `languages` choices in `copier.yml`.
-2. Add its files under `template/`, with names conditional on the language (e.g.
-   `{% if 'r' in languages %}renv.lock{% endif %}`).
-3. Add a `guidelines/<language>-style.md` and a section to `AGENTS.md.jinja`,
-   `CLAUDE.md.jinja`, `.pre-commit-config.yaml.jinja`, and the CI workflow.
+1. Add an optional question to `copier.yml`; Python remains included in every project.
+2. Add its files under `template/`, with conditional names where appropriate (e.g.
+   `{% if use_r %}renv.lock{% endif %}`). Mark any new project-owned files in
+   `_skip_if_exists`.
+3. Add relevant guidelines, agent instructions, checks, and CI steps. Document and
+   test generated projects both with and without the additional language.
 
 ### Roadmap
 
