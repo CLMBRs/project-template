@@ -15,9 +15,7 @@ Create a GitHub repository for every project from day one. It can be private to 
 
 ## Creating a project from the template
 
-You need [uv](https://docs.astral.sh/uv/getting-started/installation/) and git. While
-the template repository is private, first let git use your GitHub login: install the
-[GitHub CLI](https://cli.github.com/) and run `gh auth login` and `gh auth setup-git`.
+You need [uv](https://docs.astral.sh/uv/getting-started/installation/) and git.
 
 ```bash
 uvx copier copy gh:CLMBRs/project-template my-project
@@ -25,6 +23,9 @@ uvx copier copy gh:CLMBRs/project-template my-project
 
 Copier asks a few questions (name, license, Python package name, ...) and prints the
 next steps. Python is included in every project; other languages can be added as needed.
+To create and push the GitHub repository, install the
+[GitHub CLI](https://cli.github.com/) and run `gh auth login` and `gh auth setup-git`
+once per machine.
 Later, to pull in improvements to the template:
 
 ```bash

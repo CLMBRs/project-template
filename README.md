@@ -20,10 +20,7 @@ A new project comes with:
 
 ## Creating a project
 
-You need [uv](https://docs.astral.sh/uv/getting-started/installation/) and git. While
-this repository is private, let git use your GitHub login first (once per machine):
-install the [GitHub CLI](https://cli.github.com/), then run
-`gh auth login` and `gh auth setup-git`.
+You need [uv](https://docs.astral.sh/uv/getting-started/installation/) and git.
 
 ```bash
 uvx copier copy gh:CLMBRs/project-template my-project
@@ -40,9 +37,11 @@ uv run pytest
 git add -A && git commit -m "Initial commit from CLMBR project template"
 ```
 
-Finally, create the GitHub repository and push (e.g.
-`gh repo create CLMBRs/my-project --private --source . --push`), then fill in
-`README.md` and `PROJECT.md`.
+Finally, authenticate with GitHub (install the [GitHub CLI](https://cli.github.com/)
+and run `gh auth login` and `gh auth setup-git` once per machine), then create the
+GitHub repository and push (e.g.
+`gh repo create CLMBRs/my-project --private --source . --push`). Fill in `README.md`
+and `PROJECT.md`.
 
 ## Updating a project
 
